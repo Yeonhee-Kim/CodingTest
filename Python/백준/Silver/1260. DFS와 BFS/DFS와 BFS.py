@@ -1,43 +1,45 @@
 from collections import deque
 
-# DFS 함수
-def DFS_with_adj_list(graph, root):
-    visited = []
-    stack = [root]
 
-    while stack:
-        n = stack.pop()
-        if n not in visited:
-            visited.append(n)
-            # 방문할 수 있는 노드를 정렬하여 작은 번호부터 탐색
-            stack += sorted(graph[n] - set(visited), reverse=True)  # 스택에 넣을 때 역순으로 정렬
-    return visited
+def dfs(start):
+    visited[start] = True
+    print(start, end=" ")
 
-# BFS 함수
-def BFS_with_adj_list(graph, root):
-    visited = []
-    queue = deque([root])
+    for i in graph[start]:
+        if not visited[i]:
+            dfs(i)
 
+
+def bfs(start):
+    queue = deque([start])
+    visited[start] = True
     while queue:
-        n = queue.popleft()
-        if n not in visited:
-            visited.append(n)
-            # 방문할 수 있는 노드를 정렬하여 작은 번호부터 탐색
-            queue += sorted(graph[n] - set(visited))  # 큐에 넣을 때 정렬
-    return visited
 
-# 입력 받기
+        v = queue.popleft()
+        print(v, end=" ")
+        for i in graph[v]:
+            if not visited[i]:
+                visited[i] = True
+                queue.append(i)
+
+
 N, M, V = map(int, input().split())
-graph = {i: set() for i in range(1, N + 1)}
+graph = [[] for _ in range(N + 1)]
 
 for _ in range(M):
-    u, v = map(int, input().split())
-    graph[u].add(v)
-    graph[v].add(u)
+    a, b = map(int, input().split())
+    graph[a].append(b)
+    graph[b].append(a)
 
-# 결과 출력
-dfs_result = DFS_with_adj_list(graph, V)
-bfs_result = BFS_with_adj_list(graph, V)
+# 정렬
+for i in graph:
+    i.sort()
 
-print(" ".join(map(str, dfs_result)))
-print(" ".join(map(str, bfs_result)))
+# dfs
+visited = [False] * (N + 1)
+dfs(V)
+print()
+
+# bfs
+visited = [False] * (N + 1)
+bfs(V)
